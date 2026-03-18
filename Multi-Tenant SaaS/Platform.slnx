@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/Platform.Api/Platform.Api.csproj" />
+    <Project Path="backend/src/Platform.Core/Platform.Core.csproj" />
+    <Project Path="backend/src/Platform.Infrastructure/Platform.Infrastructure.csproj" />
+  </Folder>
+</Solution>
