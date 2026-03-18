@@ -1,0 +1,5 @@
+{
+  "name": "Distributed E-Commerce Platform",
+  "description": "A microservices architecture demonstration featuring .NET Core, RabbitMQ, and the Saga pattern.",
+  "requestFramePermissions": []
+}

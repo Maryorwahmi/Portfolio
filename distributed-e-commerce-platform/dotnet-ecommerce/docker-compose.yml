@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # Infrastructure
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - ecommerce-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ecommerce_db
+    ports:
+      - "5432:5432"
+    networks:
+      - ecommerce-network
+
+  # Microservices
+  api-gateway:
+    build:
+      context: ./ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+    networks:
+      - ecommerce-network
+
+  auth-service:
+    build:
+      context: ./AuthService
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=auth_db;Username=postgres;Password=password
+      - JwtSettings__Secret=SuperSecretKeyForJwtAuthentication123!
+    depends_on:
+      - postgres
+    networks:
+      - ecommerce-network
+
+  product-service:
+    build:
+      context: ./ProductService
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=product_db;Username=postgres;Password=password
+      - RabbitMQ__HostName=rabbitmq
+      - Redis__ConnectionString=redis:6379
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+    networks:
+      - ecommerce-network
+
+  order-service:
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=order_db;Username=postgres;Password=password
+      - RabbitMQ__HostName=rabbitmq
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - ecommerce-network
+
+  payment-service:
+    build:
+      context: ./PaymentService
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=payment_db;Username=postgres;Password=password
+      - RabbitMQ__HostName=rabbitmq
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - ecommerce-network
+
+  notification-service:
+    build:
+      context: ./NotificationService
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=notification_db;Username=postgres;Password=password
+      - RabbitMQ__HostName=rabbitmq
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
