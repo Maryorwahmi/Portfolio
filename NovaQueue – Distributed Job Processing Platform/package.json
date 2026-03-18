@@ -1,0 +1,43 @@
+{
+  "name": "novaqueue",
+  "version": "2.0.0",
+  "description": "NovaCore Systems - Distributed Job Processing Platform | Built with ❤️ by CaptainCode",
+  "author": "CaptainCode",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/captaincode/novaqueue"
+  },
+  "private": true,
+  "workspaces": [
+    "services/api",
+    "services/worker",
+    "services/scheduler",
+    "services/dashboard",
+    "shared"
+  ],
+  "scripts": {
+    "setup": "npm install",
+    "dev": "concurrently \"npm run dev -w services/api\" \"npm run dev -w services/worker\" \"npm run dev -w services/scheduler\" \"npm run dev -w services/dashboard\"",
+    "api": "npm run dev -w services/api",
+    "worker": "npm run dev -w services/worker",
+    "scheduler": "npm run dev -w services/scheduler",
+    "dashboard": "npm run dev -w services/dashboard",
+    "build": "npm run build -w services/api && npm run build -w services/worker && npm run build -w services/scheduler && npm run build -w services/dashboard",
+    "test": "npm run test -w services/api && npm run test -w services/worker",
+    "lint": "eslint . --ext .ts --ext .tsx",
+    "docker:build": "docker-compose -f docker/docker-compose.yml build",
+    "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.yml down",
+    "docker:logs": "docker-compose -f docker/docker-compose.yml logs -f",
+    "db:migrate": "npm run migrate -w services/api"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.50.0",
+    "typescript": "^5.2.2"
+  },
+  "comment": "Built with ❤️ by CaptainCode - NovaCore Systems"
+}

@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: novaqueue-postgres
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-novaqueue}
+      POSTGRES_USER: ${DATABASE_USER:-novaqueue_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-novaqueue_secure_password_change_in_production}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-novaqueue_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - novaqueue
+
+  # Redis Message Broker
+  redis:
+    image: redis:7-alpine
+    container_name: novaqueue-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - novaqueue
+
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: novaqueue-api
+    environment:
+      NODE_ENV: production
+      API_PORT: 3000
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-novaqueue}
+      DATABASE_USER: ${DATABASE_USER:-novaqueue_user}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-novaqueue_secure_password_change_in_production}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: info
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - novaqueue
+
+  # Worker Service (scalable)
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+    container_name: novaqueue-worker
+    environment:
+      NODE_ENV: production
+      WORKER_CONCURRENCY: 10
+      WORKER_POLL_INTERVAL: 1000
+      WORKER_MAX_RETRIES: 3
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-novaqueue}
+      DATABASE_USER: ${DATABASE_USER:-novaqueue_user}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-novaqueue_secure_password_change_in_production}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - novaqueue
+
+  # Scheduler Service
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.scheduler
+    container_name: novaqueue-scheduler
+    environment:
+      NODE_ENV: production
+      SCHEDULER_INTERVAL: 10000
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-novaqueue}
+      DATABASE_USER: ${DATABASE_USER:-novaqueue_user}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-novaqueue_secure_password_change_in_production}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - novaqueue
+
+  # Monitoring Dashboard
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    container_name: novaqueue-dashboard
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3000
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - novaqueue
+
+networks:
+  novaqueue:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

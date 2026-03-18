@@ -1,0 +1,33 @@
+# Worker Service Dockerfile
+# Author: CaptainCode
+# Company: NovaCore Systems
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY services/worker/package.json ./services/worker/
+COPY shared/package.json ./shared/
+
+# Install dependencies
+RUN npm install --workspace=shared
+RUN npm install --workspace=services/worker
+
+# Copy source code
+COPY shared/src ./shared/src
+COPY shared/tsconfig.json ./shared/
+COPY services/worker/src ./services/worker/src
+COPY services/worker/tsconfig.json ./services/worker/
+
+# Build
+WORKDIR /app/services/worker
+RUN npm run build
+
+# Start
+CMD ["npm", "start"]
+
+# Label
+LABEL maintainer="CaptainCode" \
+      description="NovaQueue Worker Service | Created by CaptainCode for NovaCore Systems"

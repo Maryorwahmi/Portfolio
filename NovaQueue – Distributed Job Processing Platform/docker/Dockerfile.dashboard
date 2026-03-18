@@ -1,0 +1,38 @@
+# Dashboard Dockerfile
+# Author: CaptainCode
+# Company: NovaCore Systems
+
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY services/dashboard/package.json ./services/dashboard/
+
+RUN npm install --workspace=services/dashboard
+
+COPY services/dashboard ./services/dashboard
+
+WORKDIR /app/services/dashboard
+RUN npm run build
+
+# Serve with Vite
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY services/dashboard/package.json ./services/dashboard/
+
+RUN npm install --workspace=services/dashboard --production
+
+COPY services/dashboard ./services/dashboard
+COPY --from=builder /app/services/dashboard/dist ./services/dashboard/dist
+
+EXPOSE 5173
+
+CMD ["npm", "run", "preview", "--workspace=services/dashboard"]
+
+# Label
+LABEL maintainer="CaptainCode" \
+      description="NovaQueue Dashboard | Created by CaptainCode for NovaCore Systems"

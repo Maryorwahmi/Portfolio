@@ -1,0 +1,41 @@
+# API Service Dockerfile
+# Author: CaptainCode
+# Company: NovaCore Systems
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY services/api/package.json ./services/api/
+COPY services/api/package*.json ./services/api/
+COPY shared/package.json ./shared/
+
+# Install dependencies
+RUN npm install --workspace=shared
+RUN npm install --workspace=services/api
+
+# Copy source code
+COPY shared/src ./shared/src
+COPY shared/tsconfig.json ./shared/
+COPY services/api/src ./services/api/src
+COPY services/api/tsconfig.json ./services/api/
+
+# Build
+WORKDIR /app/services/api
+RUN npm run build
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+
+# Start
+CMD ["npm", "start"]
+
+# Label
+LABEL maintainer="CaptainCode" \
+      description="NovaQueue API Service | Created by CaptainCode for NovaCore Systems"

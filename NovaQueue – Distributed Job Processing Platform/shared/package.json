@@ -1,0 +1,17 @@
+{
+  "name": "@novaqueue/shared",
+  "version": "2.0.0",
+  "description": "Shared utilities and types for NovaQueue | CaptainCode",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --outDir dist --declaration",
+    "dev": "tsc --watch --outDir dist --declaration"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "nanoid": "^4.0.2"
+  }
+}
