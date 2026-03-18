@@ -1,0 +1,5 @@
+{
+  "name": "Smart Appointment & Booking Platform",
+  "description": "A robust multi-user booking system designed for service providers to manage appointments in real-time. Features concurrency handling, timezone management, and transactional integrity.",
+  "requestFramePermissions": []
+}
