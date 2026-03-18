@@ -1,0 +1,106 @@
+"""
+Docker Compose configuration for local development
+"""
+# Intelligent AI Service Platform
+# Crafted by CaptainCode
+
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-platform-db
+    environment:
+      POSTGRES_USER: aiplatform
+      POSTGRES_PASSWORD: aiplatform123
+      POSTGRES_DB: ai_platform
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiplatform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ai-platform-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Application
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ai-platform-api
+    environment:
+      DATABASE_URL: postgresql://aiplatform:aiplatform123@postgres:5432/ai_platform
+      REDIS_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      SECRET_KEY: your-secret-key-here
+      DEBUG: "false"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ai-platform-worker
+    environment:
+      DATABASE_URL: postgresql://aiplatform:aiplatform123@postgres:5432/ai_platform
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    command: celery -A src.celery_app worker --loglevel=info
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ai-platform-beat
+    environment:
+      DATABASE_URL: postgresql://aiplatform:aiplatform123@postgres:5432/ai_platform
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./src:/app/src
+    command: celery -A src.celery_app beat --loglevel=info
+
+volumes:
+  postgres_data:
+  redis_data:
