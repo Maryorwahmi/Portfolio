@@ -1,0 +1,5 @@
+{
+  "name": "Subscription & Billing Service",
+  "description": "A scalable subscription and payment service MVP with Stripe integration.",
+  "requestFramePermissions": []
+}
