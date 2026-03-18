@@ -1,0 +1,5 @@
+{
+  "name": "Real-Time Chat Platform",
+  "description": "A scalable real-time messaging system with presence, typing indicators, and message queues.",
+  "requestFramePermissions": []
+}
