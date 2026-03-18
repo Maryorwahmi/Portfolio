@@ -123,9 +123,8 @@ Update `Jwt:SigningKey` before any real deployment.
 - `C:\Users\User\Documents\Multi-Tenant SaaS\backend\src\Platform.Api\Program.cs`
 - `C:\Users\User\Documents\Multi-Tenant SaaS\frontend\tailwind.config.js`
 
-## Next Steps (Suggested)
-1. Build frontend dashboards and project management UI
-2. Add real billing integration (Stripe)
-3. Add background jobs for analytics aggregation
-4. Add migrations and CI
+## Author
+CaptianCode - Designer & Developer
+
+
 
