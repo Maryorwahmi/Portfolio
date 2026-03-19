@@ -2,23 +2,9 @@
 
 # HelixMonitor - Infrastructure Observability Platform
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-Proprietary-green)
-![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen)
-
 **Created by CaptainCode** - HelixOps Technologies
 
 ## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [API Documentation](#api-documentation)
-- [Configuration](#configuration)
-- [Deployment](#deployment)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
 
 ## 🎯 Overview
 
