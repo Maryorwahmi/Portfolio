@@ -466,3 +466,25 @@ npm run test
 - The backend uses a modular approach. The `MockRedis` class simulates a real Redis instance for pub/sub and list operations, making it easy to swap out for a real Redis client (like `ioredis`) in a production environment.
 - The SQLite database is currently configured to run in memory (`:memory:`) for demonstration purposes. For persistent storage, change the filename in `server.ts` to a local file path (e.g., `./chat.db`).
 - The frontend is served by Vite middleware during development and as static files in production.
+
+# 8 Smart Appointment & Booking Platform
+
+A robust, real-time, multi-user appointment booking platform designed to handle high concurrency, prevent double-booking, and provide an intuitive AI-powered booking experience.
+
+## Features
+
+- **Real-time Availability:** View available time slots for different service providers.
+- **Concurrency Control:** Utilizes strict database transactions and unique constraints to prevent double-booking, even under heavy load.
+- **AI Booking Assistant:** An integrated AI chatbot that can understand natural language, check availability, book appointments, and cancel them. It also asks for clarifications if multiple slots are available and generates natural language confirmations.
+- **Authentication:** Simple signup and login system for users.
+- **Appointment Reasons:** Users can specify the reason for their appointment.
+- **Timezone Management:** All slots are stored in UTC and automatically converted to the user's local timezone on the frontend.
+
+## Tech Stack
+
+- **Frontend:** React 18, Vite, Tailwind CSS, Lucide React
+- **Backend:** Node.js, Express
+- **Database:** SQLite (`better-sqlite3`)
+- **AI Integration:** `@google/genai`
+
+
