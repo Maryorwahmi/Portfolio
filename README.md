@@ -226,7 +226,7 @@ Persistent storage and retrieval of:
 - **ELK Stack** - Centralized logging
   - Elasticsearch, Logstash, Kibana
 
-3 # Multi-Tenant SaaS Platform (Flagship Project)
+#  3 Multi-Tenant SaaS Platform (Flagship Project)
 
 This repository is a work-in-progress Multi-Tenant SaaS platform built with **.NET (ASP.NET Core)**, **PostgreSQL**, and **React**. It demonstrates tenant isolation (shared DB + `tenant_id`), role-based auth with **ASP.NET Core Identity + JWT**, subscription-ready data models, a Trello-lite project management domain, analytics ingestion, and real-time board updates via SignalR.
 
