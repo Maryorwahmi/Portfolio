@@ -226,11 +226,46 @@ Persistent storage and retrieval of:
 - **ELK Stack** - Centralized logging
   - Elasticsearch, Logstash, Kibana
 
-### Testing
-- **Pytest** - Test framework
-- **pytest-asyncio** - Async test support
-- **HTTPx** - Async HTTP client
-- **Locust** - Load testing
+3 # Multi-Tenant SaaS Platform (Flagship Project)
+
+This repository is a work-in-progress Multi-Tenant SaaS platform built with **.NET (ASP.NET Core)**, **PostgreSQL**, and **React**. It demonstrates tenant isolation (shared DB + `tenant_id`), role-based auth with **ASP.NET Core Identity + JWT**, subscription-ready data models, a Trello-lite project management domain, analytics ingestion, and real-time board updates via SignalR.
+
+## What’s Implemented
+
+### Backend
+- **Solution structure**
+  - `backend/src/Platform.Core` — domain entities, enums, and abstractions
+  - `backend/src/Platform.Infrastructure` — EF Core + Identity + tenant provider
+  - `backend/src/Platform.Api` — REST API + JWT auth + SignalR
+- **Multi-tenancy (shared DB)**
+  - `tenant_id` on tenant-scoped entities
+  - Global query filters enforce tenant isolation
+  - Tenant resolved from JWT claims or `X-Tenant-Id` / `X-Tenant-Slug` headers
+- **Identity + JWT**
+  - `ApplicationUser` extends Identity with `TenantId`
+  - Token includes `tenant_id` claim
+  - Roles: `Admin`, `User`
+- **Trello-lite domain**
+  - `Tenant → Project → Board → List → Card`
+  - Membership + roles at project level
+- **Analytics pipeline (stub)**
+  - Ingest events
+  - Roll-up to daily metrics
+  - Summary endpoint for dashboards
+- **Billing (stub)**
+  - Plans + subscriptions
+  - Mock checkout/portal URLs
+- **Real-time updates**
+  - SignalR hub for board updates
+
+### Frontend (Scaffolded)
+- Vite + React (TypeScript)
+- Tailwind configured (config + PostCSS)
+- Dependencies added for:
+  - `zustand` (state management)
+  - `@headlessui/react` (UI primitives)
+  - `react-router-dom`
+- UI implementation still pending
 
 - **Dashboard**: Real-time metrics visualization
 - **Services View**: Registered services and health status
