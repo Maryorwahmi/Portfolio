@@ -272,3 +272,46 @@ This repository is a work-in-progress Multi-Tenant SaaS platform built with **.N
 - **Alerts View**: Active and historical alert management
 
 ---
+
+# 4 NovaQueue - Distributed Job Processing Platform v2.0
+
+**Created with ❤️ by CaptainCode**  
+**Company: NovaCore Systems**
+
+> A production-ready, highly scalable distributed job queue system built with Node.js, Redis, and PostgreSQL.
+
+[![GitHub](https://img.shields.io/badge/GitHub-CaptainCode-blue)](https://github.com/captaincode)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)](https://github.com/captaincode/novaqueue)
+
+## 🎯 Overview
+
+NovaQueue is a distributed job processing platform designed to handle background tasks reliably at scale. It decouples long-running operations from your main application flow while guaranteeing execution reliability through built-in retry mechanisms, failure handling, and comprehensive monitoring.
+
+### Key Features
+
+✨ **Core Capabilities**
+- REST API for job submission and management
+- Asynchronous job processing with multiple workers
+- Priority-based queue management (Critical, High, Medium, Low)
+- Automatic retry with exponential backoff
+- Dead Letter Queue (DLQ) for failed jobs
+- Support for scheduled (delayed) and cron-based jobs
+- Job status tracking and lifecycle monitoring
+
+🚀 **Advanced Features**
+- Idempotency support (prevent duplicate execution)
+- Distributed lock mechanisms for concurrent safety  
+- Comprehensive event logging and audit trails
+- Real-time monitoring dashboard
+- Horizontal scaling with multiple workers
+- WebSocket support for job events
+- Multi-tenant queue isolation
+- Rate limiting and throttling
+
+📊 **Monitoring & Observability**
+- Live dashboard displaying queue statistics
+- Job execution metrics and performance analytics
+- Worker health monitoring with heartbeats
+- System-wide metrics export (Prometheus-compatible)
+- Detailed job execution logs and event history
