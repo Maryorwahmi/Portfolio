@@ -488,3 +488,24 @@ A robust, real-time, multi-user appointment booking platform designed to handle 
 - **AI Integration:** `@google/genai`
 
 
+# 9 Subscription & Billing Service MVP
+
+A scalable subscription and payment service MVP built with Node.js, Express, React, and Vite. This application allows users to subscribe to plans, handles mock payments, generates PDF invoices, and provides a professional dashboard for managing billing.
+
+## Features
+
+- **User Authentication:** Simple email-based login for accessing the billing portal.
+- **Plan Selection:** View available subscription plans (Monthly/Yearly) and subscribe.
+- **Subscription Management:** View current active plan, status, and renewal dates.
+- **Mock Payment Processing:** Simulate successful or failed payments to test webhook handling and subscription state changes without needing a live Stripe account.
+- **PDF Invoices:** Automatically generates and stores PDF invoices upon successful payment.
+- **Invoice History:** View past invoices and download them as PDFs.
+- **Professional Dashboard:** A clean, responsive UI built with Tailwind CSS and Framer Motion for smooth transitions.
+
+## Tech Stack
+
+- **Frontend:** React 19, Vite, Tailwind CSS, Framer Motion, Lucide React
+- **Backend:** Node.js, Express.js
+- **Database:** SQLite (using `better-sqlite3`)
+- **PDF Generation:** `pdfkit`
+- **Testing:** Node.js native test runner (`node --test`)
